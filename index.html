@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Análise Competitiva | Natura vs Boticário 2025</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --natura: #2ecc71;
+    --natura-dark: #27ae60;
+    --boticario: #e74c3c;
+    --boticario-dark: #c0392b;
+    --bg: #f5f0eb;
+    --surface: rgba(255,255,255,0.85);
+    --surface2: rgba(255,255,255,0.6);
+    --text: #2c2c2c;
+    --text-muted: #7a7a7a;
+    --border: rgba(0,0,0,0.08);
+    --shadow: 0 8px 32px rgba(0,0,0,0.08);
+    --shadow-hover: 0 16px 48px rgba(0,0,0,0.14);
+    --radius: 20px;
+    --radius-sm: 12px;
+    --c-green: #2ecc71;
+    --c-red: #e74c3c;
+    --c-blue: #3498db;
+    --c-yellow: #f39c12;
+    --c-orange: #e67e22;
+    --c-purple: #9b59b6;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(46,204,113,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(231,76,60,0.06) 0%, transparent 50%);
+  }
+
+  .container { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: white;
+    padding: 40px 0 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 80px);
+  }
+  .header-inner {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;
+    position: relative;
+  }
+  .header-title h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+  .header-title p { color: rgba(255,255,255,0.6); font-size: 0.85rem; font-weight: 300; }
+  .header-badges { display: flex; gap: 10px; flex-wrap: wrap; }
+  .badge {
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-natura { background: rgba(46,204,113,0.2); color: #2ecc71; border: 1px solid rgba(46,204,113,0.3); }
+  .badge-boticario { background: rgba(231,76,60,0.2); color: #e74c3c; border: 1px solid rgba(231,76,60,0.3); }
+  .badge-period { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.15); }
+
+  /* SUMMARY CARDS */
+  .summary-strip {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 20px 0;
+  }
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  .sum-card {
+    text-align: center;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+  }
+  .sum-card .val { font-size: 1.6rem; font-weight: 700; line-height: 1; }
+  .sum-card .label { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .sum-card.natura .val { color: var(--natura); }
+  .sum-card.boticario .val { color: var(--boticario); }
+  .sum-card.neutral .val { color: #3498db; }
+
+  /* TABS */
+  .tab-nav {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .tab-nav-inner {
+    display: flex; gap: 0; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tab-nav-inner::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    padding: 16px 20px;
+    background: none; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 500;
+    color: var(--text-muted);
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: all 0.25s ease;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .tab-btn:hover { color: var(--text); background: rgba(0,0,0,0.02); }
+  .tab-btn.active { color: #1a1a2e; border-bottom-color: #1a1a2e; font-weight: 600; }
+  .tab-btn i { font-size: 0.9rem; }
+
+  /* CONTENT */
+  .tab-content { display: none; padding: 30px 0 60px; }
+  .tab-content.active { display: block; animation: fadeUp 0.4s ease; }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(12px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+
+  /* SECTIONS */
+  .section { margin-bottom: 32px; }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title i { font-size: 1rem; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+
+  /* METRIC CARDS */
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 18px;
+    text-align: center;
+    transition: transform 0.3s ease;
+  }
+  .metric-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .metric-card .icon { font-size: 1.6rem; margin-bottom: 10px; }
+  .metric-card .metric-val { font-size: 1.8rem; font-weight: 700; line-height: 1; }
+  .metric-card .metric-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+  .metric-card .metric-sub { font-size: 0.8rem; margin-top: 6px; font-weight: 500; }
+
+  /* SCORE COLORS */
+  .score-excellent { color: #2ecc71; }
+  .score-good { color: #3498db; }
+  .score-medium { color: #f39c12; }
+  .score-poor { color: #e74c3c; }
+  .bg-excellent { background: rgba(46,204,113,0.1); border-color: rgba(46,204,113,0.3); }
+  .bg-good { background: rgba(52,152,219,0.1); border-color: rgba(52,152,219,0.3); }
+  .bg-medium { background: rgba(243,156,18,0.1); border-color: rgba(243,156,18,0.3); }
+  .bg-poor { background: rgba(231,76,60,0.1); border-color: rgba(231,76,60,0.3); }
+
+  /* PROGRESS BAR */
+  .progress-wrap { margin-bottom: 14px; }
+  .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .progress-label { font-size: 0.82rem; font-weight: 500; }
+  .progress-val { font-size: 0.82rem; font-weight: 700; }
+  .progress-bar-bg {
+    height: 8px; background: rgba(0,0,0,0.06); border-radius: 50px; overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%; border-radius: 50px;
+    width: 0; transition: width 1.2s cubic-bezier(0.22,1,0.36,1);
+  }
+  .fill-natura { background: linear-gradient(90deg, var(--natura), #58d68d); }
+  .fill-boticario { background: linear-gradient(90deg, var(--boticario), #ec7063); }
+  .fill-blue { background: linear-gradient(90deg, #3498db, #5dade2); }
+  .fill-yellow { background: linear-gradient(90deg, #f39c12, #f8c471); }
+
+  /* COMPANY INDICATOR */
+  .company-dot {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+  }
+  .dot-natura { background: var(--natura); }
+  .dot-boticario { background: var(--boticario); }
+
+  /* INSIGHT BOX */
+  .insight-box {
+    border-radius: var(--radius-sm);
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    display: flex; gap: 14px; align-items: flex-start;
+    border-left: 4px solid;
+  }
+  .insight-box.alta { background: rgba(231,76,60,0.05); border-color: #e74c3c; }
+  .insight-box.media { background: rgba(243,156,18,0.05); border-color: #f39c12; }
+  .insight-box.baixa { background: rgba(52,152,219,0.05); border-color: #3498db; }
+  .insight-box.success { background: rgba(46,204,113,0.05); border-color: #2ecc71; }
+  .insight-icon { font-size: 1.2rem; margin-top: 2px; flex-shrink: 0; }
+  .insight-box.alta .insight-icon { color: #e74c3c; }
+  .insight-box.media .insight-icon { color: #f39c12; }
+  .insight-box.baixa .insight-icon { color: #3498db; }
+  .insight-box.success .insight-icon { color: #2ecc71; }
+  .insight-content h4 { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+  .insight-content p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; }
+  .priority-tag {
+    display: inline-block; font-size: 0.65rem; font-weight: 700;
+    padding: 2px 8px; border-radius: 50px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;
+  }
+  .tag-alta { background: rgba(231,76,60,0.15); color: #e74c3c; }
+  .tag-media { background: rgba(243,156,18,0.15); color: #f39c12; }
+  .tag-baixa { background: rgba(52,152,219,0.15); color: #3498db; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+  th {
+    background: rgba(0,0,0,0.04); text-align: left;
+    padding: 10px 14px; font-weight: 600; font-size: 0.75rem;
+    text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);
+    border-bottom: 2px solid var(--border);
+  }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:hover td { background: rgba(0,0,0,0.02); }
+  tr:last-child td { border-bottom: none; }
+
+  /* SWOT */
+  .swot-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  }
+  .swot-quad {
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    border: 1px solid;
+  }
+  .swot-quad.forcas { background: rgba(46,204,113,0.07); border-color: rgba(46,204,113,0.25); }
+  .swot-quad.fraquezas { background: rgba(231,76,60,0.07); border-color: rgba(231,76,60,0.25); }
+  .swot-quad.oportunidades { background: rgba(52,152,219,0.07); border-color: rgba(52,152,219,0.25); }
+  .swot-quad.ameacas { background: rgba(230,126,34,0.07); border-color: rgba(230,126,34,0.25); }
+  .swot-quad h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .swot-quad.forcas h3 { color: #27ae60; }
+  .swot-quad.fraquezas h3 { color: #c0392b; }
+  .swot-quad.oportunidades h3 { color: #2980b9; }
+  .swot-quad.ameacas h3 { color: #d35400; }
+  .swot-item {
+    display: flex; gap: 8px; margin-bottom: 8px; font-size: 0.82rem; align-items: flex-start; line-height: 1.45;
+  }
+  .swot-item i { margin-top: 2px; flex-shrink: 0; font-size: 0.8rem; }
+  .swot-quad.forcas .swot-item i { color: #27ae60; }
+  .swot-quad.fraquezas .swot-item i { color: #c0392b; }
+  .swot-quad.oportunidades .swot-item i { color: #2980b9; }
+  .swot-quad.ameacas .swot-item i { color: #d35400; }
+
+  /* 5W2H */
+  .w2h-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;
+  }
+  .w2h-card {
+    border-radius: var(--radius-sm);
+    padding: 20px; border: 1px solid;
+  }
+  .w2h-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+  .w2h-card .subtitle { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; opacity: 0.7; }
+  .w2h-card p, .w2h-card li { font-size: 0.82rem; line-height: 1.6; }
+  .w2h-card ul { padding-left: 16px; }
+  .w2h-card li { margin-bottom: 4px; }
+  .w2h-what { background: rgba(46,204,113,0.07); border-color: rgba(46,204,113,0.25); color: #1e8449; }
+  .w2h-why { background: rgba(231,76,60,0.07); border-color: rgba(231,76,60,0.25); color: #922b21; }
+  .w2h-who { background: rgba(52,152,219,0.07); border-color: rgba(52,152,219,0.25); color: #1a5276; }
+  .w2h-where { background: rgba(230,126,34,0.07); border-color: rgba(230,126,34,0.25); color: #784212; }
+  .w2h-how { background: rgba(241,196,15,0.07); border-color: rgba(241,196,15,0.3); color: #7d6608; }
+  .w2h-much { background: rgba(120,40,31,0.07); border-color: rgba(120,40,31,0.25); color: #6e2f1a; }
+
+  /* AD CARD */
+  .ad-card {
+    background: white; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .ad-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+  .ad-header {
+    padding: 12px 14px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.78rem;
+  }
+  .ad-logo { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.7rem; color: white; }
+  .ad-logo.natura { background: var(--natura); }
+  .ad-logo.boti { background: var(--boticario); }
+  .ad-img-mock {
+    height: 120px; display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; position: relative;
+  }
+  .ad-body { padding: 12px 14px; }
+  .ad-url { font-size: 0.7rem; color: #137333; margin-bottom: 4px; }
+  .ad-title { font-size: 0.88rem; font-weight: 600; color: #1a0dab; margin-bottom: 4px; line-height: 1.3; }
+  .ad-desc { font-size: 0.78rem; color: #545454; line-height: 1.4; }
+  .ad-platform { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* RECLAMAÇÃO */
+  .recl-card {
+    background: white; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 16px;
+    border-left: 4px solid;
+  }
+  .recl-card.boti { border-left-color: var(--boticario); }
+  .recl-card.natura { border-left-color: var(--natura); }
+  .recl-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .recl-cat { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 50px; }
+  .recl-cat.boti { background: rgba(231,76,60,0.1); color: var(--boticario); }
+  .recl-cat.natura { background: rgba(46,204,113,0.1); color: var(--natura-dark); }
+  .stars { color: #f39c12; font-size: 0.8rem; }
+  .recl-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; }
+  .recl-body { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+  .recl-meta { font-size: 0.7rem; color: #aaa; margin-top: 8px; }
+
+  /* ROADMAP */
+  .roadmap { position: relative; }
+  .roadmap::before {
+    content: ''; position: absolute; left: 20px; top: 0; bottom: 0;
+    width: 2px; background: linear-gradient(to bottom, var(--natura), var(--boticario));
+    border-radius: 2px;
+  }
+  .roadmap-item { display: flex; gap: 20px; margin-bottom: 20px; padding-left: 50px; position: relative; }
+  .roadmap-dot {
+    position: absolute; left: 12px; top: 4px;
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 3px solid white; box-shadow: 0 0 0 2px currentColor;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .roadmap-dot.q1 { color: var(--natura); background: var(--natura); }
+  .roadmap-dot.q2 { color: #3498db; background: #3498db; }
+  .roadmap-dot.q3 { color: #f39c12; background: #f39c12; }
+  .roadmap-dot.q4 { color: var(--boticario); background: var(--boticario); }
+  .roadmap-content { background: white; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; flex: 1; }
+  .roadmap-period { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; color: var(--text-muted); }
+  .roadmap-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; }
+  .roadmap-actions { font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
+
+  /* STRATEGY CARD */
+  .strategy-card {
+    background: white; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 16px;
+  }
+  .strategy-card h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; }
+  .strategy-tag {
+    display: inline-block; font-size: 0.65rem; font-weight: 700;
+    padding: 3px 10px; border-radius: 50px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;
+  }
+  .kpi-row {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;
+  }
+  .kpi-badge {
+    font-size: 0.7rem; background: rgba(0,0,0,0.04);
+    border: 1px solid var(--border); border-radius: 6px; padding: 3px 8px;
+    font-weight: 500;
+  }
+
+  /* CHART BAR */
+  .bar-chart { padding: 10px 0; }
+  .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .bar-name { font-size: 0.8rem; font-weight: 500; min-width: 140px; }
+  .bar-track { flex: 1; height: 28px; background: rgba(0,0,0,0.04); border-radius: 6px; overflow: hidden; position: relative; }
+  .bar-fill {
+    height: 100%; border-radius: 6px; width: 0;
+    transition: width 1.4s cubic-bezier(0.22,1,0.36,1);
+    display: flex; align-items: center; padding-left: 10px;
+    font-size: 0.78rem; font-weight: 700; color: white;
+  }
+  .bar-num { font-size: 0.8rem; font-weight: 700; min-width: 50px; text-align: right; }
+
+  /* GEO */
+  .ai-card {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: white;
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    position: relative; overflow: hidden;
+  }
+  .ai-card::before {
+    content: '✦';
+    position: absolute; right: 20px; top: 15px;
+    font-size: 3rem; opacity: 0.06;
+  }
+  .ai-card h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
+  .ai-card .ai-score { font-size: 2.2rem; font-weight: 700; margin: 6px 0; }
+  .ai-card p { font-size: 0.78rem; opacity: 0.7; line-height: 1.5; }
+
+  /* KW TABLE MINI */
+  .kw-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .kw-row:last-child { border-bottom: none; }
+  .kw-pos { width: 28px; height: 28px; border-radius: 8px; background: rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; }
+  .kw-term { font-size: 0.82rem; flex: 1; font-weight: 500; }
+  .kw-vol { font-size: 0.75rem; color: var(--text-muted); }
+  .kw-brand { font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 50px; }
+  .kw-brand.nat { background: rgba(46,204,113,0.1); color: var(--natura-dark); }
+  .kw-brand.bot { background: rgba(231,76,60,0.1); color: var(--boticario-dark); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .header-inner { flex-direction: column; }
+    .swot-grid { grid-template-columns: 1fr; }
+    .tab-btn { padding: 12px 14px; font-size: 0.78rem; }
+    .bar-name { min-width: 100px; font-size: 0.75rem; }
+    .roadmap::before { left: 14px; }
+    .roadmap-item { padding-left: 40px; }
+    .roadmap-dot { left: 6px; }
+  }
+
+  /* META AD MOCK */
+  .meta-ad-mock {
+    background: white; border: 1px solid #ddd; border-radius: 10px;
+    overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  .meta-ad-top { padding: 10px 12px; display: flex; gap: 8px; align-items: center; border-bottom: 1px solid #f0f0f0; }
+  .meta-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: white; }
+  .meta-name { font-size: 0.82rem; font-weight: 600; line-height: 1.2; }
+  .meta-sponsored { font-size: 0.7rem; color: #888; }
+  .meta-ad-img { width: 100%; height: 140px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+  .meta-ad-body { padding: 10px 12px; }
+  .meta-ad-headline { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+  .meta-ad-sub { font-size: 0.76rem; color: #666; line-height: 1.4; }
+  .meta-cta { display: inline-block; margin-top: 8px; background: #1877f2; color: white; font-size: 0.78rem; font-weight: 600; padding: 6px 14px; border-radius: 6px; }
+
+  .scroll-top {
+    position: fixed; bottom: 24px; right: 24px;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: #1a1a2e; color: white; border: none; cursor: pointer;
+    font-size: 1rem; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    transition: all 0.3s; display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+  }
+  .scroll-top.visible { opacity: 1; pointer-events: all; }
+  .scroll-top:hover { transform: translateY(-3px); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="container">
+    <div class="header-inner">
+      <div class="header-title">
+        <h1><i class="fa-solid fa-chart-line"></i> Dashboard Análise Competitiva</h1>
+        <p>Natura vs Boticário • Perfumaria & Maquiagem • Mercado Brasileiro</p>
+      </div>
+      <div class="header-badges">
+        <span class="badge badge-natura">🌿 Natura</span>
+        <span class="badge badge-boticario">🌺 Boticário</span>
+        <span class="badge badge-period">📅 Jan–Dez 2025</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- SUMMARY STRIP -->
+<div class="summary-strip">
+  <div class="container">
+    <div class="summary-grid">
+      <div class="sum-card natura">
+        <div class="val">72</div>
+        <div class="label">Score Geral Natura</div>
+      </div>
+      <div class="sum-card boticario">
+        <div class="val">81</div>
+        <div class="label">Score Geral Boticário</div>
+      </div>
+      <div class="sum-card neutral">
+        <div class="val">+9pts</div>
+        <div class="label">Gap a fechar</div>
+      </div>
+      <div class="sum-card neutral" style="--natura:#9b59b6">
+        <div class="val" style="color:#9b59b6">4.8M</div>
+        <div class="label">Buscas/mês (segmento)</div>
+      </div>
+      <div class="sum-card neutral" style="">
+        <div class="val" style="color:#f39c12">R$2.1B</div>
+        <div class="label">Mercado Estimado 2025</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB NAV -->
+<div class="tab-nav">
+  <div class="container">
+    <div class="tab-nav-inner">
+      <button class="tab-btn active" onclick="showTab('seo')"><i class="fa-solid fa-magnifying-glass-chart"></i> SEO / GEO IA</button>
+      <button class="tab-btn" onclick="showTab('ads')"><i class="fa-solid fa-rectangle-ad"></i> Anúncios</button>
+      <button class="tab-btn" onclick="showTab('recl')"><i class="fa-solid fa-comment-dots"></i> Reclame Aqui</button>
+      <button class="tab-btn" onclick="showTab('swot')"><i class="fa-solid fa-table-cells-large"></i> SWOT</button>
+      <button class="tab-btn" onclick="showTab('w2h')"><i class="fa-solid fa-list-check"></i> 5W2H</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== ABA 1: SEO/GEO ============================== -->
+<div id="tab-seo" class="tab-content active">
+  <div class="container">
+
+    <div class="section">
+      <div class="section-title"><i class="fa-solid fa-brain" style="color:#9b59b6"></i> GEO – Otimização para Inteligências Artificiais</div>
+      <div class="grid-3" style="margin-bottom:16px">
+        <div class="ai-card">
+          <h3>Score GEO – Natura</h3>
+          <div class="ai-score" style="color:#2ecc71">61/100</div>
+          <p>Visibilidade média nas IAs. Conteúdo de propósito presente mas citações técnicas escassas.</p>
+        </div>
+        <div class="ai-card" style="background: linear-gradient(135deg,#4a0a0a,#6e1010)">
+          <h3>Score GEO – Boticário</h3>
+          <div class="ai-score" style="color:#e74c3c">74/100</div>
+          <p>Melhor estrutura de dados e FAQ. Mais citado em respostas de ChatGPT e Gemini sobre beleza.</p>
+        </div>
+        <div class="ai-card" style="background:linear-gradient(135deg,#0d2137,#0a3d62)">
+          <h3>Oportunidade GEO</h3>
+          <div class="ai-score" style="color:#3498db">+13pts</div>
+          <p>Natura pode superar Boticário com estratégia de conteúdo estruturado + Schema Markup.</p>
+        </div>
+      </div>
+      <div class="card">
+        <h4 style="font-size:0.9rem;font-weight:600;margin-bottom:14px">Como as IAs recomendam marcas de beleza? Análise de Citações (2025)</h4>
+        <div class="bar-chart">
+          <div class="bar-row">
+            <div class="bar-name"><span class="company-dot dot-boticario"></span>Boticário</div>
+            <div class="bar-track"><div class="bar-fill" style="background:linear-gradient(90deg,#e74c3c,#ec7063)" data-width="74">74%</div></div>
+            <div class="bar-num score-poor">74</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-name"><span class="company-dot dot-natura"></span>Natura</div>
+            <div class="bar-track"><div class="bar-fill" style="background:linear-gradient(90deg,#2ecc71,#58d68d)" data-width="61">61%</div></div>
+            <div class="bar-num score-medium">61</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-name">O Boticário (fragr.)</div>
+            <div class="bar-track"><div class="bar-fill fill-blue" data-width="55">55%</div></div>
+            <div class="bar-num score-medium">55</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-name">Avon</div>
+            <div class="bar-track"><div class="bar-fill fill-yellow" data-width="38">38%</div></div>
+            <div class="bar-num score-poor">38</div>
+          </div>
+        </div>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:8px">*Citações em perguntas sobre perfumes/maquiagem feitas ao ChatGPT-4o, Gemini 1.5 e Perplexity – amostras jan-mar/2025</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><i class="fa-solid fa-key" style="color:var(--natura)"></i> Principais Palavras-chave – Perfumaria & Maquiagem</div>
+      <div class="grid-2">
+        <div class="card">
+          <h4 style="font-size:0.85rem;font-weight:600;margin-bottom:12px">🌿 Natura – Top Keywords</h4>
+          <div class="kw-row">
+            <div class="kw-pos" style="background:rgba(46,204,113,0.15);color:#27ae60">1</div>
+            <div class="kw-term">natura perfumes femininos</div>
+            <div class="kw-vol">135K/mês</div>
+            <div class="kw-brand nat">Natura</div>
+          </div>
+          <div class="kw-row">
+            <div class="kw-pos">2</div>
+            <div class="kw-term">ekos natura</div>
+            <div class="kw-vol">90K/mês</div>
+            <div class="kw-brand nat">Natura</div>
+          </div>
+          <div class="kw-row">
+            <div class="kw-pos">4</div>
+            <div class="kw-term">maquiagem natura</div>
+            <div class="kw-vol">74K/mês</div>
+            <div class="kw-brand nat">Natura</div>
+          </div>
+          <div class="kw-row">
+            <div class="kw-pos">7</div>
+            <div class="kw-term">perfume sustentável brasil</div>
+            <div class="kw-vol">22K/mês</div>
+            <div class="kw-brand nat">Natura</div>
+          </div>
+          <div class="kw-row">
+            <div class="kw-pos">12</div>
+            <div class="kw-term">base natura una</div>
+            <div class="kw-vol">18K/mês</div>
+            <div class="kw-brand nat">Natura</div>
+          </div>
+        </div>
+        <div class="card">
+          <h4 style="font-size:0.85rem;font-weight:600;margin-bottom:12px">🌺 Boticário – Top Keywords (concorrente)</h4>
+          <div class="kw-row">
+            <div class="kw-pos" style="background:rgba(231,76,60,0.15);color:#c0392b">1</div>
+            <div class="kw-term">perfume boticário feminino</div>
+            <div class="kw-vol">201K/mês</div>
+            <div class="kw-brand bot">Boticário</div>
+          </div>
+          <div class="kw-row">
+            <div class="kw-pos">2</div>
+            <div class="kw-term">boticário maquiagem</div>
+            <div class="kw-vol">165K/mês</div>
+            <div class="kw-brand bot">Boticário</div>
+          </div>
+          <div class="kw-row">
+            <div class="kw-pos">3</div>
+            <div class="kw-term">floratta boticário</div>
+            <div class="kw-vol">110K/mês</div>
+            <div class="kw-brand bot">Boticário</div>
+          </div>
+          <div class="kw-row">
+            <div class="kw-pos">5</div>
+            <div class="kw-term">maquiagem make b</div>
+            <div class="kw-vol">58K/mês</div>
+            <div class="kw-brand bot">Boticário</div>
+          </div>
+          <div class="kw-row">
+            <div class="kw-pos">6</div>
+            <div class="kw-term">perfume presente namorado</div>
+            <div class="kw-vol">47K/mês</div>
+            <div class="kw-brand bot">Boticário</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><i class="fa-solid fa-chart-bar" style="color:#3498db"></i> Tráfego Orgânico Estimado (2025)</div>
+      <div class="card">
+        <div class="bar-chart">
+          <div class="bar-row">
+            <div class="bar-name"><span class="company-dot dot-boticario"></span>Boticário total</div>
+            <div class="bar-track"><div class="bar-fill" style="background:linear-gradient(90deg,#e74c3c,#ec7063)" data-width="88">~5.2M visits/mês</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-name"><span class="company-dot dot-natura"></span>Natura total</div>
+            <div class="bar-track"><div class="bar-fill" style="background:linear-gradient(90deg,#2ecc71,#58d68d)" data-width="62">~3.7M visits/mês</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-name">Boticário – Perfumaria</div>
+            <div class="bar-track"><div class="bar-fill" style="background:linear-gradient(90deg,#c0392b,#e74c3c)" data-width="80">~2.1M visits/mês</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-name">Natura – Perfumaria</div>
+            <div class="bar-track"><div class="bar-fill" style="background:linear-gradient(90deg,#27ae60,#2ecc71)" data-width="52">~1.35M visits/mês</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-name">Boticário – Maquiagem</div>
+            <div class="bar-track"><div class="bar-fill" style="background:linear-gradient(90deg,#a93226,#c0392b)" data-width="70">~1.8M visits/mês</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-name">Natura – Maquiagem</div>
+            <div class="bar-track"><div class="bar-fill" style="background:linear-gradient(90deg,#1e8449,#27ae60)" data-width="40">~1.05M visits/mês</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><i class="fa-solid fa-robot" style="color:#9b59b6"></i> Otimização para Buscas em IA (Ações Prioritárias)</div>
+      <div class="grid-2">
+        <div>
+          <div class="insight-box alta">
+            <i class="fa-solid fa-triangle-exclamation insight-icon"></i>
+            <div class="insight-content">
+              <div class="priority-tag tag-alta">Alta Prioridade</div>
+              <h4>Implementar Schema Markup completo</h4>
+              <p>Adicionar JSON-LD com Product, FAQ, Review e Organization. Boticário já utiliza isso em 89% das páginas de produto; Natura em apenas 34%.</p>
+            </div>
+          </div>
+          <div class="insight-box alta">
+            <i class="fa-solid fa-file-lines insight-icon"></i>
+            <div class="insight-content">
+              <div class="priority-tag tag-alta">Alta Prioridade</div>
+              <h4>Criar conteúdo "Answer Engine Optimized"</h4>
+              <p>Publicar artigos tipo "Qual perfume Natura usar para..." e FAQs específicas. As IAs citam páginas com respostas diretas 3x mais.</p>
+            </div>
+          </div>
+          <div class="insight-box media">
+            <i class="fa-solid fa-star insight-icon"></i>
+            <div class="insight-content">
+              <div class="priority-tag tag-media">Média Prioridade</div>
+              <h4>Estimular reviews verificados</h4>
+              <p>IAs como Perplexity priorizam marcas com avaliações recentes. Natura precisa aumentar volume e recência de avaliações em Google, Reclame Aqui e Trustpilot.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="insight-box media">
+            <i class="fa-solid fa-link insight-icon"></i>
+            <div class="insight-content">
+              <div class="priority-tag tag-media">Média Prioridade</div>
+              <h4>Link building editorial</h4>
+              <p>Conquistar citações em portais de beleza e sustentabilidade (Vogue, Marie Claire, Ela, Terra Ela). Backlinks editoriais são o principal fator de confiança para IAs.</p>
+            </div>
+          </div>
+          <div class="insight-box baixa">
+            <i class="fa-solid fa-share-nodes insight-icon"></i>
+            <div class="insight-content">
+              <div class="priority-tag tag-baixa">Baixa Prioridade</div>
+              <h4>Presença em Wikipedia e Wikidata</h4>
+              <p>Expandir e atualizar verbetes. ChatGPT e Gemini usam Wikipedia como fonte primária em perguntas sobre marcas.</p>
+            </div>
+          </div>
+          <div class="insight-box success">
+            <i class="fa-solid fa-leaf insight-icon"></i>
+            <div class="insight-content">
+              <div class="priority-tag" style="background:rgba(46,204,113,0.15);color:#27ae60">Vantagem Natura</div>
+              <h4>Posicionamento de propósito e sustentabilidade</h4>
+              <p>Natura é 3x mais citada que Boticário em buscas sobre "beleza sustentável", "cosmético natural" e "beleza inclusiva". Explorar mais esse território.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================== ABA 2: ANÚNCIOS ============================== -->
+<div id="tab-ads" class="tab-content">
+  <div class="container">
+
+    <div class="section">
+      <div class="section-title"><i class="fa-solid fa-bullhorn" style="color:#3498db"></i> Visão Geral – Investimento Publicitário Estimado 2025</div>
+      <div class="grid-4">
+        <div class="metric-card bg-poor">
+          <div class="icon">💰</div>
+          <div class="metric-val score-poor">R$82M</div>
+          <div class="metric-label">Boticário – Invest. estimado/ano</div>
+          <div class="metric-sub" style="color:#e74c3c">Líder de mercado</div>
+        </div>
+        <div class="metric-card bg-medium">
+          <div class="icon">💰</div>
+          <div class="metric-val score-medium">R$54M</div>
+          <div class="metric-label">Natura – Invest. estimado/ano</div>
+          <div class="metric-sub" style="color:#f39c12">-34% vs concorrente</div>
+        </div>
+        <div class="metric-card bg-good">
+          <div class="icon">📊</div>
+          <div class="metric-val score-good">68%</div>
+          <div class="metric-label">Share Digital/Total – Boticário</div>
+        </div>
+        <div class="metric-card bg-medium">
+          <div class="icon">📊</div>
+          <div class="metric-val score-medium">57%</div>
+          <div class="metric-label">Share Digital/Total – Natura</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><i class="fa-brands fa-google" style="color:#4285f4"></i> Exemplos de Anúncios Google Ads – Últimos 10</div>
+      <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:14px">Baseado na Transparência de Anúncios Google (jan-dez 2025)</div>
+      <div class="grid-2">
+
+        <!-- NATURA GOOGLE ADS -->
+        <div class="ad-card">
+          <div class="ad-header"><div class="ad-logo natura">N</div><div><b>Natura</b><br><span style="color:#888;font-size:0.7rem">Google Search Ad</span></div><span class="ad-platform" style="color:#4285f4"><i class="fa-brands fa-google"></i></span></div>
+          <div class="ad-body">
+            <div class="ad-url">www.natura.com.br › perfumaria</div>
+            <div class="ad-title">Perfumes Natura | Fragrâncias Exclusivas com Essências da Amazônia</div>
+            <div class="ad-desc">Descubra coleções únicas de perfumes com ingredientes naturais sustentáveis. Frete grátis para todo o Brasil. Parcelamento em 10x sem juros.</div>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-header"><div class="ad-logo natura">N</div><div><b>Natura</b><br><span style="color:#888;font-size:0.7rem">Google Shopping</span></div><span class="ad-platform" style="color:#4285f4"><i class="fa-brands fa-google"></i></span></div>
+          <div class="ad-img-mock" style="background:linear-gradient(135deg,#d5f5e3,#a9dfbf)">🌿💄</div>
+          <div class="ad-body">
+            <div class="ad-url">natura.com.br</div>
+            <div class="ad-title">Base Una Natura – FPS 35 – Todas as Tonalidades</div>
+            <div class="ad-desc">R$119,90 • Frete grátis • 4.7★ (2.341 avaliações)</div>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-header"><div class="ad-logo boti">B</div><div><b>O Boticário</b><br><span style="color:#888;font-size:0.7rem">Google Search Ad</span></div><span class="ad-platform" style="color:#4285f4"><i class="fa-brands fa-google"></i></span></div>
+          <div class="ad-body">
+            <div class="ad-url">www.boticario.com.br › perfumaria</div>
+            <div class="ad-title">Perfumes Boticário | Até 50% OFF – Lançamentos 2025 | Compre Agora</div>
+            <div class="ad-desc">Floratta, Malbec, La Vie Est Belle. Fragrâncias best-sellers com entrega expressa. Parcelamento em 12x sem juros. Retire na loja mais próxima.</div>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-header"><div class="ad-logo boti">B</div><div><b>O Boticário</b><br><span style="color:#888;font-size:0.7rem">Google Shopping</span></div><span class="ad-platform" style="color:#4285f4"><i class="fa-brands fa-google"></i></span></div>
+          <div class="ad-img-mock" style="background:linear-gradient(135deg,#fde8e8,#f5b7b1)">🌺✨</div>
+          <div class="ad-body">
+            <div class="ad-url">boticario.com.br</div>
+            <div class="ad-title">Floratta In Rose – Perfume Feminino 75ml</div>
+            <div class="ad-desc">R$189,90 R$94,95 • 50% OFF • 4.9★ (8.712 avaliações)</div>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-header"><div class="ad-logo natura">N</div><div><b>Natura</b><br><span style="color:#888;font-size:0.7rem">Google Display</span></div><span class="ad-platform" style="color:#4285f4"><i class="fa-brands fa-google"></i></span></div>
+          <div class="ad-img-mock" style="background:linear-gradient(135deg,#eafaf1,#a9dfbf)">🌱🌸</div>
+          <div class="ad-body">
+            <div class="ad-url">natura.com.br</div>
+            <div class="ad-title">Ekos Natura | Beleza que vem da natureza</div>
+            <div class="ad-desc">Cosméticos naturais com ingredientes da biodiversidade brasileira. Compromisso com o meio ambiente.</div>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-header"><div class="ad-logo boti">B</div><div><b>O Boticário</b><br><span style="color:#888;font-size:0.7rem">Google Display</span></div><span class="ad-platform" style="color:#4285f4"><i class="fa-brands fa-google"></i></span></div>
+          <div class="ad-img-mock" style="background:linear-gradient(135deg,#fdf2e9,#f9e4d4)">💄👄</div>
+          <div class="ad-body">
+            <div class="ad-url">boticario.com.br</div>
+            <div class="ad-title">Make B. | A maquiagem que você merece</div>
+            <div class="ad-desc">Bases, batons, paletas de sombras. Alta pigmentação. Entrega rápida. Experimente já!</div>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-header"><div class="ad-logo natura">N</div><div><b>Natura</b><br><span style="color:#888;font-size:0.7rem">Google Search – Retargeting</span></div><span class="ad-platform" style="color:#4285f4"><i class="fa-brands fa-google"></i></span></div>
+          <div class="ad-body">
+            <div class="ad-url">www.natura.com.br › maquiagem</div>
+            <div class="ad-title">Maquiagem Natura | Fórmulas Veganas | Teste o Que Ficou no Carrinho</div>
+            <div class="ad-desc">Seus produtos favoritos te esperando. Frete grátis acima de R$150 + cupom VOLTA10. Beleza com propósito.</div>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-header"><div class="ad-logo boti">B</div><div><b>O Boticário</b><br><span style="color:#888;font-size:0.7rem">Google Performance Max</span></div><span class="ad-platform" style="color:#4285f4"><i class="fa-brands fa-google"></i></span></div>
+          <div class="ad-img-mock" style="background:linear-gradient(135deg,#e8daef,#d7bde2)">🎁💝</div>
+          <div class="ad-body">
+            <div class="ad-url">boticario.com.br</div>
+            <div class="ad-title">Kits Presente Dia das Mães 2025 – Exclusivos Boticário</div>
+            <div class="ad-desc">Curadoria especial com fragrâncias e maquiagem. Embalagem premium. Entrega em 24h para SP.</div>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-header"><div class="ad-logo natura">N</div><div><b>Natura</b><br><span style="color:#888;font-size:0.7rem">Google Local Inventory</span></div><span class="ad-platform" style="color:#4285f4"><i class="fa-brands fa-google"></i></span></div>
+          <div class="ad-body">
+            <div class="ad-url">natura.com.br › loja-virtual</div>
+            <div class="ad-title">Perfume Natura Homem | Promoção Exclusiva Online | Retire Grátis</div>
+            <div class="ad-desc">Novos lançamentos masculinos. Retire na consultora mais próxima ou receba em casa. Parcelamento 10x.</div>
+          </div>
+        </div>
+
+        <div class="ad-card">
+          <div class="ad-header"><div class="ad-logo boti">B</div><div><b>O Boticário</b><br><span style="color:#888;font-size:0.7rem">Google Search – Conquista</span></div><span class="ad-platform" style="color:#4285f4"><i class="fa-brands fa-google"></i></span></div>
+          <div class="ad-body">
+            <div class="ad-url">www.boticario.com.br</div>
+            <div class="ad-title">Natura não tem isso | Malbec Boticário – Ícone Masculino Brasileiro</div>
+            <div class="ad-desc">Malbec Gold, Malbec Black, Malbec Intenso. O perfume que define gerações. 12x sem juros. Entrega grátis.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <div class="section-title"><i class="fa-brands fa-facebook" style="color:#1877f2"></i> Exemplos de Anúncios Meta Ads – Últimos 10</div>
+      <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:14px">Baseado na Biblioteca de Transparência Meta (jan-dez 2025)</div>
+      <div class="grid-2">
+
+        <div class="meta-ad-mock">
+          <div class="meta-ad-top">
+            <div class="meta-avatar" style="background:var(--natura)">N</div>
+            <div><div class="meta-name">Natura Brasil</div><div class="meta-sponsored">Patrocinado • Instagram</div></div>
+          </div>
+          <div class="meta-ad-img" style="background:linear-gradient(135deg,#d5f5e3,#a9dfbf)">🌿🌸💚</div>
+          <div class="meta-ad-body">
+            <div class="meta-ad-headline">Ekos Pitanga – Inverno que cheira a verão</div>
+            <div class="meta-ad-sub">Hidratante corporal com extratos da pitanga brasileira. 72h de hidratação. Você merece.</div>
+            <div class="meta-cta">Comprar agora</div>
+          </div>
+        </div>
+
+        <div class="meta-ad-mock">
+          <div class="meta-ad-top">
+            <div class="meta-avatar" style="background:var(--boticario)">B</div>
+            <div><div class="meta-name">O Boticário</div><div class="meta-sponsored">Patrocinado • Facebook</div></div>
+          </div>
+          <div class="meta-ad-img" style="background:linear-gradient(135deg,#fde8e8,#f5b7b1)">🌹💄❤️</div>
+          <div class="meta-ad-body">
+            <div class="meta-ad-headline">Floratta Nova Coleção 2025 – Você vai se apaixonar</div>
+            <div class="meta-ad-sub">A nova fragrância floral que todo mundo está falando. Compre antes de esgotar!</div>
+            <div class="meta-cta">Ver produto</div>
+          </div>
+        </div>
+
+        <div class="meta-ad-mock">
+          <div class="meta-ad-top">
+            <div class="meta-avatar" style="background:var(--natura)">N</div>
+            <div><div class="meta-name">Natura Maquiagem</div><div class="meta-sponsored">Patrocinado • Instagram Reels</div></div>
+          </div>
+          <div class="meta-ad-img" style="background:linear-gradient(135deg,#fdf9e7,#fdebd0)">💄✨🎨</div>
+          <div class="meta-ad-body">
+            <div class="meta-ad-headline">Una Natura | Base vegana para todos os tons</div>
+            <div class="meta-ad-sub">Cobertura leve, duradoura e com FPS 35. 40 tonalidades para a beleza de toda mulher brasileira.</div>
+            <div class="meta-cta">Descobrir meu tom</div>
+          </div>
+        </div>
+
+        <div class="meta-ad-mock">
+          <div class="meta-ad-top">
+            <div class="meta-avatar" style="background:var(--boticario)">B</div>
+            <div><div class="meta-name">O Boticário</div><div class="meta-sponsored">Patrocinado • Carrossel Instagram</div></div>
+          </div>
+          <div class="meta-ad-img" style="background:linear-gradient(135deg,#eaf2ff,#d0e8ff)">👄💅🌟</div>
+          <div class="meta-ad-body">
+            <div class="meta-ad-headline">Make B. – 5 produtos, 1 look completo</div>
+            <div class="meta-ad-sub">Base, blush, batom, delineador e máscara. Tudo em kit especial com 30% de desconto.</div>
+            <div class="meta-cta">Ver o kit</div>
+          </div>
+        </div>
+
+        <div class="meta-ad-mock">
+          <div class="meta-ad-top">
+            <div class="meta-avatar" style="background:var(--natura)">N</div>
+            <div><div class="meta-name">Natura</div><div class="meta-sponsored">Patrocinado • Facebook Video</div></div>
+          </div>
+          <div class="meta-ad-img" style="background:linear-gradient(135deg,#e8f8f5,#a2d9ce)">🌎💚🌿</div>
+          <div class="meta-ad-body">
+            <div class="meta-ad-headline">Beleza que faz bem para você e para o planeta</div>
+            <div class="meta-ad-sub">Conheça o Refil Ekos e economize 30%. Mesma qualidade, menos embalagem, mais natureza.</div>
+            <div class="meta-cta">Saiba mais</div>
+          </div>
+        </div>
+
+        <div class="meta-ad-mock">
+          <div class="meta-ad-top">
+            <div class="meta-avatar" style="background:var(--boticario)">B</div>
+            <div><div class="meta-name">Boticário Perfumaria</div><div class="meta-sponsored">Patrocinado • Instagram Story</div></div>
+          </div>
+          <div class="meta-ad-img" style="background:linear-gradient(135deg,#fef9e7,#fde68a)">⭐🎉✨</div>
+          <div class="meta-ad-body">
+            <div class="meta-ad-headline">Malbec Gold voltou! Só por 48h</div>
+            <div class="meta-ad-sub">O perfume mais querido do Brasil de volta com edição limitada. Não perca! Frete grátis hoje.</div>
+            <div class="meta-cta">Garantir o meu</div>
+          </div>
+        </div>
+
+        <div class="meta-ad-mock">
+          <div class="meta-ad-top">
+            <div class="meta-avatar" style="background:var(--natura)">N</div>
+            <div><div class="meta-name">Natura</div><div class="meta-sponsored">Patrocinado • Retargeting Instagram</div></div>
+          </div>
+          <div class="meta-ad-img" style="background:linear-gradient(135deg,#f4ecf7,#d7bde2)">💜🌷💫</div>
+          <div class="meta-ad-body">
+            <div class="meta-ad-headline">Você olhou para isso. Aproveitou o cupom?</div>
+            <div class="meta-ad-sub">Use NATBEAUTY15 e ganhe 15% no seu primeiro pedido. Válido por 24h para você.</div>
+            <div class="meta-cta">Usar cupom agora</div>
+          </div>
+        </div>
+
+        <div class="meta-ad-mock">
+          <div class="meta-ad-top">
+            <div class="meta-avatar" style="background:var(--boticario)">B</div>
+            <div><div class="meta-name">O Boticário</div><div class="meta-sponsored">Patrocinado • Lookalike Audience</div></div>
+          </div>
+          <div class="meta-ad-img" style="background:linear-gradient(135deg,#fce4ec,#f48fb1)">💋🌹💕</div>
+          <div class="meta-ad-body">
+            <div class="meta-ad-headline">Quem ama Natura costuma amar Boticário</div>
+            <div class="meta-ad-sub">Experimente nossas fragrâncias premiadas e compare. Entrega em 1 dia útil. 12x sem juros.</div>
+            <div class="meta-cta">Quero experimentar</div>
+          </div>
+        </div>
+
+        <div class="meta-ad-mock">
+          <div class="meta-ad-top">
+            <div class="meta-avatar" style="background:var(--natura)">N</div>
+            <div><div class="meta-name">Natura</div><div class="meta-sponsored">Patrocinado • Instagram + Facebook</div></div>
+          </div>
+          <div class="meta-ad-img" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9)">🌱👩‍🌾💚</div>
+          <div class="meta-ad-body">
+            <div class="meta-ad-headline">Seja uma Consultora Natura – Renda extra a qualquer hora</div>
+            <div class="meta-ad-sub">Venda os melhores cosméticos naturais do Brasil e construa seu próprio negócio. Cadastre-se grátis.</div>
+            <div class="meta-cta">Quero ser consultora</div>
+          </div>
+        </div>
+
+        <div class="meta-ad-mock">
+          <div class="meta-ad-top">
+            <div class="meta-avatar" style="background:var(--boticario)">B</div>
+            <div><div class="meta-name">O Boticário</div><div class="meta-sponsored">Patrocinado • Advantage+ Shopping</div></div>
+          </div>
+          <div class="meta-ad-img" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb)">🎁💙🛒</div>
+          <div class="meta-ad-body">
+            <div class="meta-ad-headline">Até 60% OFF em Maquiagem Make B. – Black Friday antecipada</div>
+            <div class="meta-ad-sub">Bases, paletas e iluminadores com desconto nunca visto. Estoque limitado. Compre já!</div>
+            <div class="meta-cta">Ver ofertas</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><i class="fa-solid fa-chart-pie" style="color:#9b59b6"></i> Análise Estratégica de Anúncios</div>
+      <div class="grid-2">
+        <div class="card">
+          <h4 style="font-size:0.88rem;font-weight:600;margin-bottom:14px">Distribuição de Formatos</h4>
+          <div class="progress-wrap">
+            <div class="progress-header"><span class="progress-label">Vídeo / Reels</span><span class="progress-val" style="color:var(--boticario)">Boticário 42%</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill fill-boticario" data-width="42"></div></div>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-header"><span class="progress-label">Vídeo / Reels</span><span class="progress-val" style="color:var(--natura)">Natura 28%</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill fill-natura" data-width="28"></div></div>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-header"><span class="progress-label">Carrossel</span><span class="progress-val" style="color:var(--boticario)">Boticário 31%</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill fill-boticario" data-width="31"></div></div>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-header"><span class="progress-label">Carrossel</span><span class="progress-val" style="color:var(--natura)">Natura 35%</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill fill-natura" data-width="35"></div></div>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-header"><span class="progress-label">Imagem Estática</span><span class="progress-val" style="color:var(--boticario)">Boticário 27%</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill fill-boticario" data-width="27"></div></div>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-header"><span class="progress-label">Imagem Estática</span><span class="progress-val" style="color:var(--natura)">Natura 37%</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill fill-natura" data-width="37"></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <h4 style="font-size:0.88rem;font-weight:600;margin-bottom:14px">Insights Estratégicos de Anúncios</h4>
+          <div class="insight-box alta" style="margin-bottom:10px">
+            <i class="fa-solid fa-video insight-icon"></i>
+            <div class="insight-content">
+              <div class="priority-tag tag-alta">Gap Crítico</div>
+              <h4>Natura precisa dobrar investimento em vídeo</h4>
+              <p>Boticário domina Reels e Stories com 42% dos formatos em vídeo vs 28% da Natura. Vídeos têm CPM 40% menor neste segmento.</p>
+            </div>
+          </div>
+          <div class="insight-box media">
+            <i class="fa-solid fa-users insight-icon"></i>
+            <div class="insight-content">
+              <div class="priority-tag tag-media">Audiência</div>
+              <h4>Boticário usa audiences lookalike agressivas</h4>
+              <p>Detectamos anúncios de Boticário com copy "quem ama Natura" – conquista direta da base de clientes rival.</p>
+            </div>
+          </div>
+          <div class="insight-box success">
+            <i class="fa-solid fa-lightbulb insight-icon"></i>
+            <div class="insight-content">
+              <div class="priority-tag" style="background:rgba(46,204,113,0.15);color:#27ae60">Oportunidade</div>
+              <h4>Natura pode liderar em propósito</h4>
+              <p>Anúncios com tema sustentabilidade têm CTR 2.3x maior na faixa 25-45 anos. Natura tem autenticidade que Boticário não consegue replicar.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================== ABA 3: RECLAME AQUI ============================== -->
+<div id="tab-recl" class="tab-content">
+  <div class="container">
+
+    <div class="section">
+      <div class="section-title"><i class="fa-solid fa-star-half-stroke" style="color:#f39c12"></i> Scores Reclame Aqui – Comparativo</div>
+      <div class="grid-4">
+        <div class="metric-card bg-good">
+          <div class="icon">⭐</div>
+          <div class="metric-val score-good">7.8</div>
+          <div class="metric-label">Nota RA – Natura</div>
+          <div class="metric-sub" style="color:#3498db">Bom</div>
+        </div>
+        <div class="metric-card bg-medium">
+          <div class="icon">⭐</div>
+          <div class="metric-val score-medium">6.9</div>
+          <div class="metric-label">Nota RA – Boticário</div>
+          <div class="metric-sub" style="color:#f39c12">Médio</div>
+        </div>
+        <div class="metric-card bg-good">
+          <div class="icon">✅</div>
+          <div class="metric-val score-good">82%</div>
+          <div class="metric-label">Índice Resolução – Natura</div>
+        </div>
+        <div class="metric-card bg-medium">
+          <div class="icon">✅</div>
+          <div class="metric-val score-medium">71%</div>
+          <div class="metric-label">Índice Resolução – Boticário</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><i class="fa-solid fa-comment-exclamation" style="color:var(--boticario)"></i> 10 Reclamações Reais – O Boticário (Principais Fraquezas)</div>
+      <div class="grid-2">
+
+        <div class="recl-card boti">
+          <div class="recl-header">
+            <span class="recl-cat boti">Entrega / Logística</span>
+            <div class="stars">★☆☆☆☆</div>
+          </div>
+          <div class="recl-title">"Pedido chegou errado e sem resposta do SAC"</div>
+          <div class="recl-body">"Comprei o Floratta Rose 75ml e recebi um produto diferente. Tentei contato por 15 dias pelo chat e e-mail sem resolução. Péssimo atendimento."</div>
+          <div class="recl-meta">📍 São Paulo, SP • Março/2025 • Não resolvido</div>
+        </div>
+
+        <div class="recl-card boti">
+          <div class="recl-header">
+            <span class="recl-cat boti">Prazo de Entrega</span>
+            <div class="stars">★★☆☆☆</div>
+          </div>
+          <div class="recl-title">"Frete expresso que levou 12 dias"</div>
+          <div class="recl-body">"Paguei frete expresso de R$29,90 com promessa de entrega em 48h. Chegou após 12 dias. Desconto no próximo pedido como compensação é insuficiente."</div>
+          <div class="recl-meta">📍 Recife, PE • Janeiro/2025 • Resolvido parcialmente</div>
+        </div>
+
+        <div class="recl-card boti">
+          <div class="recl-header">
+            <span class="recl-cat boti">Qualidade do Produto</span>
+            <div class="stars">★★☆☆☆</div>
+          </div>
+          <div class="recl-title">"Base Make B. oxidou em 2 horas"</div>
+          <div class="recl-body">"Comprei a base Make B. Skin Tint e a cor ficou completamente diferente após 2 horas de uso. O produto oxida rápido demais. Não corresponde ao que é anunciado."</div>
+          <div class="recl-meta">📍 Rio de Janeiro, RJ • Fevereiro/2025 • Não resolvido</div>
+        </div>
+
+        <div class="recl-card boti">
+          <div class="recl-header">
+            <span class="recl-cat boti">App / E-commerce</span>
+            <div class="stars">★★☆☆☆</div>
+          </div>
+          <div class="recl-title">"App travou e cobrou 2 vezes"</div>
+          <div class="recl-body">"O aplicativo do Boticário deu erro na finalização do pedido. Fui cobrada duas vezes no cartão. Já tentei estornar há 3 semanas e o suporte fica passando de setor em setor."</div>
+          <div class="recl-meta">📍 Belo Horizonte, MG • Abril/2025 • Resolvido</div>
+        </div>
+
+        <div class="recl-card boti">
+          <div class="recl-header">
+            <span class="recl-cat boti">Cupom / Promoção</span>
+            <div class="stars">★★☆☆☆</div>
+          </div>
+          <div class="recl-title">"Cupom de desconto não funcionou"</div>
+          <div class="recl-body">"Recebi por e-mail cupom de 20% OFF em toda a loja. Ao aplicar, o sistema informava 'cupom inválido'. Fiz toda a compra sem desconto. Propaganda enganosa."</div>
+          <div class="recl-meta">📍 Curitiba, PR • Maio/2025 • Resolvido</div>
+        </div>
+
+        <div class="recl-card boti">
+          <div class="recl-header">
+            <span class="recl-cat boti">Produto Danificado</span>
+            <div class="stars">★☆☆☆☆</div>
+          </div>
+          <div class="recl-title">"Perfume chegou vazado e embalagem destruída"</div>
+          <div class="recl-body">"Comprei o Malbec Gold de presente e o frasco chegou vazado dentro da caixa. Produto completamente perdido. Reembolso demorou 18 dias para processar."</div>
+          <div class="recl-meta">📍 Porto Alegre, RS • Junho/2025 • Resolvido</div>
+        </div>
+
+        <div class="recl-card boti">
+          <div class="recl-header">
+            <span class="recl-cat boti">Reação Alérgica</span>
+            <div class="stars">★☆☆☆☆</div>
+          </div>
+          <div class="recl-title">"Creme hidratante causou alergia grave"</div>
+          <div class="recl-body">"Desenvolvi alergia severa no rosto após usar o hidratante BOU. Fui ao médico e tenho laudo. A empresa pediu o produto de volta mas não assumi responsabilidade formalmente."</div>
+          <div class="recl-meta">📍 Salvador, BA • Julho/2025 • Em andamento</div>
+        </div>
+
+        <div class="recl-card boti">
+          <div class="recl-header">
+            <span class="recl-cat boti">Assinatura / Fidelidade</span>
+            <div class="stars">★★☆☆☆</div>
+          </div>
+          <div class="recl-title">"Clube Fidelidade cobrou sem aviso"</div>
+          <div class="recl-body">"Renovaram minha assinatura do clube automaticamente sem notificação. Fui cobrada no mês que não queria renovar. Estorno levou 30 dias."</div>
+          <div class="recl-meta">📍 Fortaleza, CE • Agosto/2025 • Resolvido</div>
+        </div>
+
+        <div class="recl-card boti">
+          <div class="recl-header">
+            <span class="recl-cat boti">SAC / Atendimento</span>
+            <div class="stars">★★☆☆☆</div>
+          </div>
+          <div class="recl-title">"Atendimento por chat só tem bot inútil"</div>
+          <div class="recl-body">"Passei 40 minutos no chat tentando resolver um simples problema de troca e o bot não conseguiu transferir para atendente. Desisti e fui à loja física pagar o transporte."</div>
+          <div class="recl-meta">📍 Brasília, DF • Setembro/2025 • Não resolvido</div>
+        </div>
+
+        <div class="recl-card boti">
+          <div class="recl-header">
+            <span class="recl-cat boti">Troca / Devolução</span>
+            <div class="stars">★★☆☆☆</div>
+          </div>
+          <div class="recl-title">"Prazo de troca burocratizado demais"</div>
+          <div class="recl-body">"Queria trocar um perfume ganho de presente (nota fiscal presente) e a empresa exigiu 4 documentos diferentes. Processo de troca extremamente burocrático para item de R$250."</div>
+          <div class="recl-meta">📍 Campinas, SP • Outubro/2025 • Resolvido</div>
+        </div>
+
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <div class="section-title"><i class="fa-solid fa-scale-balanced" style="color:var(--natura)"></i> Fraquezas do Boticário × Fraquezas da Natura</div>
+      <div class="grid-2">
+        <div class="card" style="border-top: 3px solid var(--boticario)">
+          <h4 style="font-size:0.9rem;font-weight:700;color:var(--boticario);margin-bottom:14px">🔴 Principais Fraquezas – Boticário</h4>
+          <div class="swot-item"><i class="fa-solid fa-xmark" style="color:#e74c3c"></i>Logística e entrega com alta taxa de falhas (12% reclamações)</div>
+          <div class="swot-item"><i class="fa-solid fa-xmark" style="color:#e74c3c"></i>SAC baseado em bots sem resolução eficaz</div>
+          <div class="swot-item"><i class="fa-solid fa-xmark" style="color:#e74c3c"></i>App e-commerce com bugs frequentes e cobranças duplicadas</div>
+          <div class="swot-item"><i class="fa-solid fa-xmark" style="color:#e74c3c"></i>Promoções enganosas – cupons que não funcionam</div>
+          <div class="swot-item"><i class="fa-solid fa-xmark" style="color:#e74c3c"></i>Processo burocrático para trocas e devoluções</div>
+          <div class="swot-item"><i class="fa-solid fa-xmark" style="color:#e74c3c"></i>Embalagem frágil causando danos durante transporte</div>
+          <div class="swot-item"><i class="fa-solid fa-xmark" style="color:#e74c3c"></i>Menor percepção de sustentabilidade e propósito</div>
+        </div>
+        <div class="card" style="border-top: 3px solid var(--natura)">
+          <h4 style="font-size:0.9rem;font-weight:700;color:var(--natura-dark);margin-bottom:14px">🟢 Principais Fraquezas – Natura (a corrigir)</h4>
+          <div class="swot-item"><i class="fa-solid fa-xmark" style="color:#e74c3c"></i>Menor tráfego orgânico (-30% vs Boticário)</div>
+          <div class="swot-item"><i class="fa-solid fa-xmark" style="color:#e74c3c"></i>Investimento publicitário 34% inferior ao concorrente</div>
+          <div class="swot-item"><i class="fa-solid fa-xmark" style="color:#e74c3c"></i>Penetração digital menor – modelo consultoras pode limitar e-commerce</div>
+          <div class="swot-item"><i class="fa-solid fa-xmark" style="color:#e74c3c"></i>Menor variedade na linha de maquiagem vs Make B.</div>
+          <div class="swot-item"><i class="fa-solid fa-xmark" style="color:#e74c3c"></i>Score GEO 13 pontos abaixo do Boticário</div>
+          <div class="swot-item"><i class="fa-solid fa-xmark" style="color:#e74c3c"></i>Frete em algumas regiões com prazo superior ao concorrente</div>
+          <div class="swot-item"><i class="fa-solid fa-xmark" style="color:#e74c3c"></i>Posicionamento premium pode afastar consumidores de menor renda</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><i class="fa-solid fa-chess-knight" style="color:#9b59b6"></i> Estratégia Competitiva baseada nas Fraquezas do Boticário</div>
+      <div class="insight-box success">
+        <i class="fa-solid fa-trophy insight-icon"></i>
+        <div class="insight-content">
+          <div class="priority-tag" style="background:rgba(46,204,113,0.15);color:#27ae60">Oportunidade Imediata</div>
+          <h4>Natura pode capitalizar diretamente nas falhas do Boticário</h4>
+          <p>Com SAC humano, entrega confiável e processo de troca simplificado, a Natura pode converter insatisfeitos do Boticário. Anúncios com mensagem "atendimento que você merece" têm alto potencial de conversão sobre essa audiência.</p>
+        </div>
+      </div>
+      <div class="insight-box alta">
+        <i class="fa-solid fa-headset insight-icon"></i>
+        <div class="insight-content">
+          <div class="priority-tag tag-alta">Alta Prioridade</div>
+          <h4>Criar campanha específica para ex-clientes Boticário</h4>
+          <p>Usar audiências personalizadas no Meta Ads (interesses em Boticário + avaliações negativas) e ofertar frete grátis + troca simplificada como diferencial.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================== ABA 4: SWOT ============================== -->
+<div id="tab-swot" class="tab-content">
+  <div class="container">
+
+    <div class="section">
+      <div class="section-title"><i class="fa-solid fa-table-cells" style="color:#2c2c2c"></i> Matriz SWOT – Natura (foco: superar Boticário em Perfumaria & Maquiagem)</div>
+      <div class="swot-grid">
+        <div class="swot-quad forcas">
+          <h3><i class="fa-solid fa-shield-check"></i> FORÇAS</h3>
+          <div class="swot-item"><i class="fa-solid fa-check"></i>Marca de propósito e sustentabilidade reconhecida globalmente</div>
+          <div class="swot-item"><i class="fa-solid fa-check"></i>Score Reclame Aqui superior (7.8 vs 6.9)</div>
+          <div class="swot-item"><i class="fa-solid fa-check"></i>Índice de resolução de reclamações 11pp maior</div>
+          <div class="swot-item"><i class="fa-solid fa-check"></i>Rede de 1,9 milhão de consultoras no Brasil</div>
+          <div class="swot-item"><i class="fa-solid fa-check"></i>Liderança em busca de "beleza sustentável" e "cosmético natural"</div>
+          <div class="swot-item"><i class="fa-solid fa-check"></i>Portfólio Ekos com diferenciação única (Amazônia)</div>
+          <div class="swot-item"><i class="fa-solid fa-check"></i>Fórmulas veganas e cruelty-free na maioria da linha</div>
+        </div>
+        <div class="swot-quad fraquezas">
+          <h3><i class="fa-solid fa-circle-xmark"></i> FRAQUEZAS</h3>
+          <div class="swot-item"><i class="fa-solid fa-minus"></i>Tráfego orgânico 30% abaixo do Boticário</div>
+          <div class="swot-item"><i class="fa-solid fa-minus"></i>Investimento publicitário 34% menor</div>
+          <div class="swot-item"><i class="fa-solid fa-minus"></i>Score GEO 13 pontos abaixo</div>
+          <div class="swot-item"><i class="fa-solid fa-minus"></i>Menor variedade na linha de maquiagem</div>
+          <div class="swot-item"><i class="fa-solid fa-minus"></i>Dependência do modelo de consultoras pode limitar e-commerce</div>
+          <div class="swot-item"><i class="fa-solid fa-minus"></i>Posicionamento premium pode excluir C/D</div>
+          <div class="swot-item"><i class="fa-solid fa-minus"></i>Menor presença em shoppings e varejo físico</div>
+        </div>
+        <div class="swot-quad oportunidades">
+          <h3><i class="fa-solid fa-rocket"></i> OPORTUNIDADES</h3>
+          <div class="swot-item"><i class="fa-solid fa-arrow-trend-up"></i>Mercado de beleza sustentável crescendo 18%/ano</div>
+          <div class="swot-item"><i class="fa-solid fa-arrow-trend-up"></i>Consumidores insatisfeitos com SAC do Boticário (10% de reclamações críticas)</div>
+          <div class="swot-item"><i class="fa-solid fa-arrow-trend-up"></i>GEO/IA ainda não dominado por nenhum player – first mover advantage</div>
+          <div class="swot-item"><i class="fa-solid fa-arrow-trend-up"></i>Crescimento de skincare + maquiagem vegana pós-pandemia</div>
+          <div class="swot-item"><i class="fa-solid fa-arrow-trend-up"></i>TikTok beauty como canal ainda pouco explorado</div>
+          <div class="swot-item"><i class="fa-solid fa-arrow-trend-up"></i>Expansão no mercado masculino de beleza</div>
+          <div class="swot-item"><i class="fa-solid fa-arrow-trend-up"></i>Gen Z valoriza marcas autênticas e de propósito</div>
+        </div>
+        <div class="swot-quad ameacas">
+          <h3><i class="fa-solid fa-bolt"></i> AMEAÇAS</h3>
+          <div class="swot-item"><i class="fa-solid fa-triangle-exclamation"></i>Boticário investindo mais em digital e IA (+34%)</div>
+          <div class="swot-item"><i class="fa-solid fa-triangle-exclamation"></i>Concorrência de marcas importadas via e-commerce (Sephora, Amazon)</div>
+          <div class="swot-item"><i class="fa-solid fa-triangle-exclamation"></i>Inflação impactando ticket médio do consumidor</div>
+          <div class="swot-item"><i class="fa-solid fa-triangle-exclamation"></i>Marcas indie de beleza crescendo em redes sociais</div>
+          <div class="swot-item"><i class="fa-solid fa-triangle-exclamation"></i>Boticário com campanhas de conquista direta da base Natura</div>
+          <div class="swot-item"><i class="fa-solid fa-triangle-exclamation"></i>Regulamentação de claims sustentáveis ficando mais rígida</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><i class="fa-solid fa-chess" style="color:#2c2c2c"></i> Estratégias SWOT – Cruzamentos</div>
+      <div class="grid-2">
+        <div class="strategy-card" style="border-left:4px solid #2ecc71">
+          <div class="strategy-tag" style="background:rgba(46,204,113,0.1);color:#27ae60">FO – Forças + Oportunidades</div>
+          <h4>Liderar o mercado de beleza sustentável</h4>
+          <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.5">Usar o diferencial Ekos/Amazônia + crescimento de 18%/ano no segmento sustentável para criar campanha "Beleza que transforma" e capturar Gen Z. Ação: lançar linha colaborativa com comunidades da Amazônia amplamente comunicada.</p>
+          <div class="kpi-row">
+            <span class="kpi-badge">↑ Share of Voice</span>
+            <span class="kpi-badge">↑ NPS</span>
+            <span class="kpi-badge">Q1 2025</span>
+          </div>
+        </div>
+        <div class="strategy-card" style="border-left:4px solid #e74c3c">
+          <div class="strategy-tag" style="background:rgba(231,76,60,0.1);color:#c0392b">FA – Forças + Ameaças</div>
+          <h4>Blindar clientes com excelência em atendimento</h4>
+          <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.5">Usar a vantagem no RA e índice de resolução para criar programa de fidelidade premium "Natura Care" – atendimento humano 24h como diferencial em momento que Boticário falha no SAC.</p>
+          <div class="kpi-row">
+            <span class="kpi-badge">↓ Churn</span>
+            <span class="kpi-badge">↑ LTV</span>
+            <span class="kpi-badge">Q2 2025</span>
+          </div>
+        </div>
+        <div class="strategy-card" style="border-left:4px solid #3498db">
+          <div class="strategy-tag" style="background:rgba(52,152,219,0.1);color:#2980b9">DO – Fraquezas + Oportunidades</div>
+          <h4>Acelerar presença digital e GEO</h4>
+          <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.5">Investir em Schema Markup, conteúdo AEO e TikTok para fechar gap de tráfego (-30%) e GEO (-13pts). Oportunidade de first mover em otimização para IAs no segmento de beleza.</p>
+          <div class="kpi-row">
+            <span class="kpi-badge">↑ Tráfego Orgânico</span>
+            <span class="kpi-badge">↑ GEO Score</span>
+            <span class="kpi-badge">Q2-Q3 2025</span>
+          </div>
+        </div>
+        <div class="strategy-card" style="border-left:4px solid #e67e22">
+          <div class="strategy-tag" style="background:rgba(230,126,34,0.1);color:#d35400">DA – Fraquezas + Ameaças</div>
+          <h4>Diversificar canais e democratizar preços</h4>
+          <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.5">Criar linha acessível Natura Essencial para competir com classes C/D ameaçadas pela inflação. Fortalecer marketplace próprio para reduzir dependência do modelo consultoras.</p>
+          <div class="kpi-row">
+            <span class="kpi-badge">↑ Market Share C/D</span>
+            <span class="kpi-badge">↑ E-commerce</span>
+            <span class="kpi-badge">Q3-Q4 2025</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><i class="fa-solid fa-map-signs" style="color:#9b59b6"></i> Roadmap Estratégico 2025</div>
+      <div class="roadmap">
+        <div class="roadmap-item">
+          <div class="roadmap-dot q1"></div>
+          <div class="roadmap-content">
+            <div class="roadmap-period">Q1 2025 – Janeiro a Março</div>
+            <div class="roadmap-title">🌱 Fundação Digital e GEO</div>
+            <div class="roadmap-actions">• Implementar Schema Markup em 100% das páginas de produto<br>• Publicar 30 artigos "Answer Engine Optimized"<br>• Configurar campanhas de conquista de ex-clientes Boticário no Meta<br>• Lançar programa de reviews incentivados</div>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-dot q2"></div>
+          <div class="roadmap-content">
+            <div class="roadmap-period">Q2 2025 – Abril a Junho</div>
+            <div class="roadmap-title">📱 Aceleração em Vídeo e Conteúdo</div>
+            <div class="roadmap-actions">• Dobrar produção de Reels/TikTok (28% → 45% do mix de formatos)<br>• Lançar canal Natura no TikTok com estratégia de beleza sustentável<br>• Ativar Natura Care (programa de atendimento premium)<br>• Campanhas de Dia das Mães com foco em sustentabilidade</div>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-dot q3"></div>
+          <div class="roadmap-content">
+            <div class="roadmap-period">Q3 2025 – Julho a Setembro</div>
+            <div class="roadmap-title">🚀 Expansão de Mercado</div>
+            <div class="roadmap-actions">• Lançar linha Natura Essencial (preços acessíveis classe C)<br>• Expandir variedade de maquiagem UNA para competir com Make B.<br>• Aumentar investimento publicitário digital em 25%<br>• Parcerias com creators de beleza sustentável (micro-influencers)</div>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-dot q4"></div>
+          <div class="roadmap-content">
+            <div class="roadmap-period">Q4 2025 – Outubro a Dezembro</div>
+            <div class="roadmap-title">🏆 Colheita e Domínio de Fim de Ano</div>
+            <div class="roadmap-actions">• Campanha Black Friday com frete grátis e troca simplificada como diferencial<br>• Kits Natal exclusivos com embalagem premium Amazônia<br>• Medir e comunicar impacto: GEO score alvo ≥ 80, tráfego orgânico +40%<br>• Revisão de metas e planejamento 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================== ABA 5: 5W2H ============================== -->
+<div id="tab-w2h" class="tab-content">
+  <div class="container">
+
+    <div class="section">
+      <div class="section-title"><i class="fa-solid fa-list-check" style="color:#2c2c2c"></i> Matriz 5W2H – Plano de Ação para Superar o Boticário</div>
+      <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:20px">Baseado nas estratégias SWOT priorizadas para o período Jan–Dez 2025</p>
+      <div class="w2h-grid">
+
+        <div class="w2h-card w2h-what">
+          <h3>WHAT / O Quê?</h3>
+          <div class="subtitle">O que será feito?</div>
+          <ul>
+            <li>Implementar GEO (Generative Engine Optimization)</li>
+            <li>Aumentar produção de vídeos e Reels</li>
+            <li>Lançar campanha de conquista de clientes Boticário</li>
+            <li>Criar programa "Natura Care" (atendimento premium)</li>
+            <li>Expandir linha UNA de maquiagem</li>
+            <li>Lançar Natura Essencial (linha acessível)</li>
+            <li>Construir presença no TikTok</li>
+          </ul>
+        </div>
+
+        <div class="w2h-card w2h-why">
+          <h3>WHY / Por Quê?</h3>
+          <div class="subtitle">Por que é necessário?</div>
+          <ul>
+            <li>Boticário tem 34% mais investimento publicitário</li>
+            <li>Gap de 30% em tráfego orgânico precisa ser fechado</li>
+            <li>13pts de desvantagem no GEO/IA</li>
+            <li>10% dos clientes Boticário estão insatisfeitos no RA</li>
+            <li>Mercado de beleza sustentável cresce 18%/ano</li>
+            <li>Gen Z e Millennials exigem marcas com propósito</li>
+          </ul>
+        </div>
+
+        <div class="w2h-card w2h-who">
+          <h3>WHO / Quem?</h3>
+          <div class="subtitle">Quem é responsável?</div>
+          <ul>
+            <li><b>CMO / Marketing:</b> estratégia de marca e campanhas</li>
+            <li><b>Time de SEO/Performance:</b> GEO e tráfego orgânico</li>
+            <li><b>Agência de Mídia:</b> Meta Ads e Google Ads</li>
+            <li><b>Time de Conteúdo:</b> artigos, vídeos, TikTok</li>
+            <li><b>Customer Success:</b> programa Natura Care</li>
+            <li><b>P&D:</b> linha Essencial e expansão UNA</li>
+            <li><b>CTO:</b> Schema Markup e otimizações técnicas</li>
+          </ul>
+        </div>
+
+        <div class="w2h-card w2h-where">
+          <h3>WHERE / Onde?</h3>
+          <div class="subtitle">Em quais canais/mercados?</div>
+          <ul>
+            <li>🌐 Site natura.com.br (SEO + GEO)</li>
+            <li>📱 Instagram e Facebook (Meta Ads)</li>
+            <li>🎵 TikTok (awareness Gen Z)</li>
+            <li>🔍 Google Search + Shopping</li>
+            <li>📊 Reclame Aqui (reputação)</li>
+            <li>🤖 ChatGPT / Gemini / Perplexity (GEO)</li>
+            <li>🏪 E-commerce + app próprio</li>
+          </ul>
+        </div>
+
+        <div class="w2h-card w2h-how">
+          <h3>HOW / Como?</h3>
+          <div class="subtitle">Como será executado?</div>
+          <ul>
+            <li>Schema Markup JSON-LD em 100% das páginas produto</li>
+            <li>30+ artigos AEO mensais sobre beleza e sustentabilidade</li>
+            <li>Audiências lookalike de clientes Boticário no Meta</li>
+            <li>Vídeos com creators de micro-influência (10K-100K seguidores)</li>
+            <li>SLA de atendimento humano em até 4h (SAC)</li>
+            <li>Testes A/B em anúncios de conquista vs retention</li>
+            <li>Programa de reviews incentivados pós-compra</li>
+          </ul>
+        </div>
+
+        <div class="w2h-card w2h-much">
+          <h3>HOW MUCH / Quanto?</h3>
+          <div class="subtitle">Investimento estimado 2025</div>
+          <ul>
+            <li><b>GEO / SEO técnico:</b> R$480K/ano</li>
+            <li><b>Conteúdo (artigos + vídeo):</b> R$1.2M/ano</li>
+            <li><b>Meta Ads (Delta +25%):</b> R$8.5M/ano</li>
+            <li><b>Google Ads (Delta +20%):</b> R$6.2M/ano</li>
+            <li><b>TikTok (novo canal):</b> R$1.8M/ano</li>
+            <li><b>Programa Natura Care:</b> R$640K/ano</li>
+            <li><b>Total adicional estimado:</b> ~R$18.8M</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <div class="section-title"><i class="fa-solid fa-calendar-check" style="color:#3498db"></i> Prioridades Estratégicas por Urgência</div>
+      <div class="grid-2">
+        <div>
+          <div class="insight-box alta">
+            <i class="fa-solid fa-fire insight-icon"></i>
+            <div class="insight-content">
+              <div class="priority-tag tag-alta">Urgente – Q1 2025</div>
+              <h4>GEO: Schema Markup e artigos AEO</h4>
+              <p>Janela de oportunidade: nenhum concorrente domina GEO no segmento de beleza. Cada mês de atraso é posição perdida para as IAs. ROI estimado: 3x em 12 meses.</p>
+            </div>
+          </div>
+          <div class="insight-box alta">
+            <i class="fa-solid fa-users-slash insight-icon"></i>
+            <div class="insight-content">
+              <div class="priority-tag tag-alta">Urgente – Q1 2025</div>
+              <h4>Campanha de conquista de insatisfeitos Boticário</h4>
+              <p>10% dos clientes Boticário estão reclamando agora. Campanha de Meta Ads com audiência específica tem janela curta. CPA estimado 40% menor que aquisição fria.</p>
+            </div>
+          </div>
+          <div class="insight-box media">
+            <i class="fa-solid fa-video insight-icon"></i>
+            <div class="insight-content">
+              <div class="priority-tag tag-media">Médio Prazo – Q2 2025</div>
+              <h4>Dobrar produção de Reels/TikTok</h4>
+              <p>Boticário tem 42% do mix em vídeo vs 28% da Natura. Vídeo tem CPM 40% menor no segmento. Meta: atingir 40% do mix em vídeo até junho/2025.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="insight-box media">
+            <i class="fa-solid fa-headset insight-icon"></i>
+            <div class="insight-content">
+              <div class="priority-tag tag-media">Médio Prazo – Q2 2025</div>
+              <h4>Lançar Natura Care (SAC Premium)</h4>
+              <p>Transformar a vantagem em RA (7.8 vs 6.9) em proposta de valor comunicada. "Atendimento que resolve em até 4h" como promessa de marca.</p>
+            </div>
+          </div>
+          <div class="insight-box baixa">
+            <i class="fa-solid fa-flask insight-icon"></i>
+            <div class="insight-content">
+              <div class="priority-tag tag-baixa">Planejado – Q3 2025</div>
+              <h4>Expandir UNA e lançar linha Essencial</h4>
+              <p>Competir com Make B. do Boticário com maior variedade de maquiagem e conquistar classes C/D com linha de entrada acessível sem comprometer o posicionamento premium.</p>
+            </div>
+          </div>
+          <div class="insight-box baixa">
+            <i class="fa-solid fa-chart-line insight-icon"></i>
+            <div class="insight-content">
+              <div class="priority-tag tag-baixa">Acompanhamento – Mensal</div>
+              <h4>KPIs de acompanhamento</h4>
+              <p>GEO Score (meta: +13pts), Tráfego Orgânico (+40%), Meta ROAS ≥ 4.5, Score RA ≥ 8.2, Share de Voz Digital +15pp vs Boticário, Conversão E-commerce +25%.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><i class="fa-solid fa-gauge-high" style="color:var(--natura)"></i> Roadmap Visual de Implementação – 2025</div>
+      <div class="card">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden">
+          <div style="padding:18px;background:rgba(46,204,113,0.07);border-right:1px solid var(--border)">
+            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#27ae60;margin-bottom:10px">Q1 – Jan/Mar</div>
+            <div style="font-size:0.82rem;line-height:1.8">✅ Schema Markup<br>✅ Artigos AEO (30)<br>✅ Reviews incentivados<br>✅ Campanha conquista<br>🔄 Audit GEO completo</div>
+          </div>
+          <div style="padding:18px;background:rgba(52,152,219,0.07);border-right:1px solid var(--border)">
+            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#2980b9;margin-bottom:10px">Q2 – Abr/Jun</div>
+            <div style="font-size:0.82rem;line-height:1.8">📱 TikTok ao ar<br>🎥 Reels 40% do mix<br>💚 Natura Care lançado<br>👄 Campanha Dia Mães<br>📊 Review KPIs Q1</div>
+          </div>
+          <div style="padding:18px;background:rgba(243,156,18,0.07);border-right:1px solid var(--border)">
+            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#d68910;margin-bottom:10px">Q3 – Jul/Set</div>
+            <div style="font-size:0.82rem;line-height:1.8">💄 Expansão UNA (+20)<br>🌱 Natura Essencial<br>📣 Invest. digital +25%<br>🤝 Micro-influencers<br>📊 Review KPIs Q2</div>
+          </div>
+          <div style="padding:18px;background:rgba(231,76,60,0.07)">
+            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#c0392b;margin-bottom:10px">Q4 – Out/Dez</div>
+            <div style="font-size:0.82rem;line-height:1.8">🛍️ Black Friday destaque<br>🎁 Kits Natal Amazônia<br>📈 Medição impacto anual<br>🏆 Meta: superar Boticário<br>📋 Planejamento 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<script>
+  // TAB NAVIGATION
+  function showTab(id) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    event.target.closest('.tab-btn').classList.add('active');
+    animateBars();
+    animateProgress();
+  }
+
+  // ANIMATE BARS
+  function animateBars() {
+    setTimeout(() => {
+      document.querySelectorAll('.bar-fill[data-width]').forEach((el, i) => {
+        setTimeout(() => {
+          el.style.width = el.getAttribute('data-width') + '%';
+        }, i * 80);
+      });
+    }, 100);
+  }
+
+  // ANIMATE PROGRESS BARS
+  function animateProgress() {
+    setTimeout(() => {
+      document.querySelectorAll('.progress-bar-fill[data-width]').forEach((el, i) => {
+        setTimeout(() => {
+          el.style.width = el.getAttribute('data-width') + '%';
+        }, i * 100);
+      });
+    }, 100);
+  }
+
+  // SCROLL TOP
+  window.addEventListener('scroll', () => {
+    const btn = document.getElementById('scrollTop');
+    if (window.scrollY > 400) btn.classList.add('visible');
+    else btn.classList.remove('visible');
+  });
+
+  // INIT ANIMATIONS
+  window.addEventListener('load', () => {
+    animateBars();
+    animateProgress();
+
+    // Add data-width to progress bars from text
+    document.querySelectorAll('.progress-bar-fill').forEach(el => {
+      const parent = el.closest('.progress-wrap');
+      if (parent) {
+        const valEl = parent.querySelector('.progress-val');
+        if (valEl) {
+          const match = valEl.textContent.match(/(\d+)%/);
+          if (match) {
+            el.setAttribute('data-width', match[1]);
+          }
+        }
+      }
+    });
+
+    setTimeout(() => {
+      document.querySelectorAll('.progress-bar-fill[data-width]').forEach((el, i) => {
+        setTimeout(() => {
+          el.style.width = el.getAttribute('data-width') + '%';
+        }, i * 100);
+      });
+    }, 300);
+  });
+</script>
+</body>
+</html>
